@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -22,14 +22,8 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       
-      - name: Install CocoaPods dependencies
-        run: |
-          cd ios
-          pod install --repo-update
-          cd ..
-      
-      - name: Build iOS App
-        run: flutter build ios --release
+      - name: Build iOS App (Flutter handles CocoaPods)
+        run: flutter build ios --release --verbose
       
       - name: Create IPA Archive
         run: |
