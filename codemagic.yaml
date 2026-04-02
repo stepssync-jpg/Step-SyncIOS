@@ -1,37 +1,40 @@
 workflows:
   ios-build:
-    name: iOS Build Workflow
+    name: iOS Release Build
     max_build_duration: 120
     environment:
-      ios_signing:
-        provisioning_profile_specifier: YOUR_PROVISIONING_PROFILE
-        code_sign_identity: iPhone Distribution
       xcode: latest
       cocoapods: default
     triggering:
       events:
         - push
-        - pull_request
       branch:
         include_patterns:
           - main
-          - develop
     scripts:
       - name: Get Flutter packages
+        script: flutter pub get
+      
+      - name: Build unsigned iOS app
+        script: flutter build ios --release --no-codesign
+      
+      - name: Create IPA archive
         script: |
-          flutter pub get
-      - name: Build iOS (.ipa)
-        script: |
-          flutter build ipa \
-            --release \
-            --export-method=app-store
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r -q app.ipa Payload/
+          mv app.ipa ../../../
+          cd ../../../
+    
     artifacts:
-      - build/ios/ipa/*.ipa
-      - build/ios/ipa/*.app
+      - app.ipa
+      - build/ios/iphoneos/Runner.app
+    
     publishing:
       email:
         recipients:
-          - your-email@example.com
+          - stepssync@example.com
         notify:
           success: true
           failure: true
