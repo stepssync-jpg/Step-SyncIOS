@@ -8,7 +8,9 @@ workflows:
     triggering:
       events:
         - push
-      branch: main
+      branch_patterns:
+        include:
+          - main
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
