@@ -1,0 +1,8 @@
+# Podfile
+# CocoaPods documentation: https://guides.cocoapods.org/using/the-podfile.html
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_post_install(installer, target)
+  end
+end
